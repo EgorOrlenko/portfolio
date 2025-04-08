@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математичний тест для початкової школи</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff4081;
+            --primary-dark: #e91e63;
+            --bg-dark: #121212;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-card-hover: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --correct-color: #4caf50;
+            --wrong-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #121212, #1a1a1a);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: var(--bg-card);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #ff4081, #f48fb1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .description {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .test-container {
+            display: none;
+        }
+
+        .test-container.active {
+            display: block;
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .start-container {
+            text-align: center;
+        }
+
+        .start-btn, .restart-btn, .home-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(255, 64, 129, 0.4);
+            margin: 10px;
+        }
+
+        .start-btn:hover, .restart-btn:hover, .home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 64, 129, 0.6);
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .option:hover {
+            background: var(--bg-card-hover);
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: rgba(255, 64, 129, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .option.correct {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: var(--correct-color);
+        }
+
+        .option.wrong {
+            background: rgba(244, 67, 54, 0.2);
+            border-color: var(--wrong-color);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .prev-btn, .next-btn, .submit-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .prev-btn:hover, .next-btn:hover, .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(255, 64, 129, 0.3);
+        }
+
+        .prev-btn:disabled, .next-btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--bg-card);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 20px 0;
+            background: linear-gradient(to right, #ff4081, #f48fb1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feedback {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+        }
+
+        .review-container {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .review-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--bg-card);
+            border-radius: 10px;
+        }
+
+        .review-question {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .review-answer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .review-answer i {
+            font-size: 1.2rem;
+        }
+
+        .correct-icon {
+            color: var(--correct-color);
+        }
+
+        .wrong-icon {
+            color: var(--wrong-color);
+        }
+
+        .home-link {
+            display: block;
+            margin-top: 30px;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .home-link:hover {
+            text-decoration: underline;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .question {
+                font-size: 1.1rem;
+            }
+
+            .option {
+                padding: 12px;
+            }
+
+            .navigation {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .prev-btn, .next-btn, .submit-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Математичний тест</h1>
+            <p class="description">Перевірте свої знання з математики для початкової школи</p>
+        </header>
+
+        <div class="start-container" id="startContainer">
+            <p>Цей тест містить 10 запитань з базової математики. Спробуйте відповісти на всі запитання якнайкраще!</p>
+            <button class="start-btn" id="startBtn">Розпочати тест</button>
+        </div>
+
+        <div class="test-container" id="testContainer">
+            <div class="timer" id="timer">Час: 00:00</div>
+            <div class="progress-container">
+                <div class="progress-text">Питання <span id="currentQuestion">1</span> з <span id="totalQuestions">10</span></div>
+                <div class="progress-bar">
+                    <div class="progress" id="progressBar" style="width: 10%;"></div>
+                </div>
+            </div>
+
+            <div class="question-container" id="questionContainer">
+            </div>
+
+            <div class="navigation">
+                <button class="prev-btn" id="prevBtn" disabled>Попереднє</button>
+                <button class="next-btn" id="nextBtn">Наступне</button>
+                <button class="submit-btn" id="submitBtn" style="display: none;">Завершити тест</button>
+            </div>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <h2>Результати тесту</h2>
+            <p class="score">Ваш бал: <span id="score">0</span> з 10</p>
+            <p class="feedback" id="feedback">Добре попрацювали!</p>
+
+            <div class="review-container" id="reviewContainer">
+            </div>
+
+            <div>
+                <button class="restart-btn" id="restartBtn">Спробувати ще раз</button>
+                <a href="index.html" class="home-btn">На головну</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Скільки буде 25 + 37?",
+                options: ["52", "62", "72", "42"],
+                answer: 1
+            },
+            {
+                question: "Розв'яжіть приклад: 64 - 27",
+                options: ["37", "47", "27", "17"],
+                answer: 0
+            },
+            {
+                question: "Скільки буде 7 × 8?",
+                options: ["49", "56", "54", "63"],
+                answer: 1
+            },
+            {
+                question: "Розв'яжіть приклад: 45 ÷ 9",
+                options: ["5", "6", "4", "7"],
+                answer: 0
+            },
+            {
+                question: "Який із виразів більший: 24 + 8 чи 38 - 5?",
+                options: ["24 + 8", "38 - 5", "Вони рівні", "Недостатньо даних"],
+                answer: 1
+            },
+            {
+                question: "Скільки кутів має трикутник?",
+                options: ["2", "3", "4", "5"],
+                answer: 1
+            },
+            {
+                question: "У класі 28 учнів. Хлопців на 4 більше, ніж дівчат. Скільки в класі дівчат?",
+                options: ["12", "14", "16", "18"],
+                answer: 0
+            },
+            {
+                question: "Скільки хвилин у 2 годинах?",
+                options: ["60", "90", "120", "180"],
+                answer: 2
+            },
+            {
+                question: "Яке число на 15 менше за 43?",
+                options: ["58", "28", "18", "38"],
+                answer: 1
+            },
+            {
+                question: "Периметр квадрата 20 см. Яка довжина його сторони?",
+                options: ["5 см", "10 см", "4 см", "20 см"],
+                answer: 0
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = Array(questions.length).fill(-1);
+        let startTime;
+        let timerInterval;
+
+        const startContainer = document.getElementById("startContainer");
+        const testContainer = document.getElementById("testContainer");
+        const resultContainer = document.getElementById("resultContainer");
+        const questionContainer = document.getElementById("questionContainer");
+        const currentQuestionElement = document.getElementById("currentQuestion");
+        const totalQuestionsElement = document.getElementById("totalQuestions");
+        const progressBar = document.getElementById("progressBar");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const submitBtn = document.getElementById("submitBtn");
+        const startBtn = document.getElementById("startBtn");
+        const restartBtn = document.getElementById("restartBtn");
+        const scoreElement = document.getElementById("score");
+        const feedbackElement = document.getElementById("feedback");
+        const reviewContainer = document.getElementById("reviewContainer");
+        const timerElement = document.getElementById("timer");
+
+        totalQuestionsElement.textContent = questions.length;
+
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            currentQuestionElement.textContent = currentQuestionIndex + 1;
+            progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+
+            let optionsHTML = "";
+            question.options.forEach((option, index) => {
+                const isSelected = userAnswers[currentQuestionIndex] === index;
+                optionsHTML += `
+                    <div class="option ${isSelected ? 'selected' : ''}" data-index="${index}">
+                        ${option}
+                    </div>
+                `;
+            });
+
+            questionContainer.innerHTML = `
+                <div class="question">${question.question}</div>
+                <div class="options">${optionsHTML}</div>
+            `;
+
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    const index = parseInt(option.getAttribute('data-index'));
+                    userAnswers[currentQuestionIndex] = index;
+                    
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                });
+            });
+
+            prevBtn.disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.style.display = "none";
+                submitBtn.style.display = "block";
+            } else {
+                nextBtn.style.display = "block";
+                submitBtn.style.display = "none";
+            }
+        }
+
+        function startTimer() {
+            startTime = new Date();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const now = new Date();
+            const elapsed = Math.floor((now - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            timerElement.textContent = `Час: ${minutes}:${seconds}`;
+        }
+
+        function calculateResults() {
+            let correctAnswers = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer === questions[index].answer) {
+                    correctAnswers++;
+                }
+            });
+            return correctAnswers;
+        }
+
+        function displayResults() {
+            clearInterval(timerInterval);
+            
+            const score = calculateResults();
+            scoreElement.textContent = score;
+            
+            if (score >= 9) {
+                feedbackElement.textContent = "Відмінно! Ви дуже добре знаєте математику!";
+            } else if (score >= 7) {
+                feedbackElement.textContent = "Добре! Ви маєте хороші знання з математики.";
+            } else if (score >= 5) {
+                feedbackElement.textContent = "Непогано! Але варто ще попрацювати над деякими темами.";
+            } else {
+                feedbackElement.textContent = "Рекомендуємо більше практикуватися в математиці.";
+            }
+            
+            let reviewHTML = "<h3>Огляд відповідей:</h3>";
+            
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.answer;
+                
+                reviewHTML += `
+                    <div class="review-item">
+                        <div class="review-question">${index + 1}. ${question.question}</div>
+                        <div class="review-answer">
+                            <span>${isCorrect ? "Правильно" : "Неправильно"}</span>
+                            <span>${isCorrect ? "✓" : "✗"}</span>
+                        </div>
+                        <div>Ваша відповідь: ${userAnswer >= 0 ? question.options[userAnswer] : "Не вибрано"}</div>
+                        ${!isCorrect ? `<div>Правильна відповідь: ${question.options[question.answer]}</div>` : ''}
+                    </div>
+                `;
+            });
+            
+            reviewContainer.innerHTML = reviewHTML;
+        }
+
+        startBtn.addEventListener('click', () => {
+            startContainer.style.display = "none";
+            testContainer.classList.add("active");
+            displayQuestion();
+            startTimer();
+        });
+        
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+        });
+        
+        submitBtn.addEventListener('click', () => {
+            const unansweredQuestions = userAnswers.filter(answer => answer === -1).length;
+            
+            if (unansweredQuestions > 0) {
+                if (confirm(`Ви не відповіли на ${unansweredQuestions} питань. Бажаєте завершити тест?`)) {
+                    testContainer.classList.remove("active");
+                    resultContainer.classList.add("active");
+                    displayResults();
+                }
+            } else {
+                testContainer.classList.remove("active");
+                resultContainer.classList.add("active");
+                displayResults();
+            }
+        });
+        
+        restartBtn.addEventListener('click', () => {
+            currentQuestionIndex = 0;
+            userAnswers = Array(questions.length).fill(-1);
+            
+            resultContainer.classList.remove("active");
+            testContainer.classList.add("active");
+            
+            displayQuestion();
+            startTimer();
+        });
+    </script>
+</body>
+</html>
